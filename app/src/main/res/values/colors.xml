@@ -2,4 +2,9 @@
 <resources>
     <color name="black">#FF000000</color>
     <color name="white">#FFFFFFFF</color>
+    <color name="pm_blue">#3772E7</color>
+    <color name="pm_black">#1A1B22</color>
+    <color name="pm_gray">#AEAFB4</color>
+    <color name="pm_light_gray">#E6E8EB</color>
+
 </resources>

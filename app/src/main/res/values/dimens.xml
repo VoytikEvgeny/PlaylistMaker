@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <dimen name="padding_main">16dp</dimen>
+    <dimen name="padding_main_buttom">28dp</dimen>
+    <dimen name="padding_setting">24dp</dimen>
+    <dimen name="text_size">24sp</dimen>
+    <dimen name="text_setting_size">16sp</dimen>
+    <dimen name="setting_padding_start">16sp</dimen>
+    <dimen name="header_size">56dp</dimen>
+    <dimen name="icon_padding">1dp</dimen>
+    <dimen name="button_top">16dp</dimen>
+    <dimen name="radius_button">16dp</dimen>
+    <dimen name="item_settings_height">61dp</dimen>
+    <dimen name="item_settings_title_size">22px</dimen>
+    <dimen name="setting_icon_padding_end">18px</dimen>
+    <dimen name="margin_left_right_size">16dp</dimen>
+    <dimen name="margin_top_bottom_size">3dp</dimen>
+</resources>
