@@ -15,6 +15,7 @@
         android:layout_width="match_parent"
         android:layout_height="@dimen/header_size"
         android:textSize="@dimen/text_size"
+        android:paddingLeft="@dimen/padding_main"
         android:textColor="@color/white"
         android:text="@string/app_name"
         />
