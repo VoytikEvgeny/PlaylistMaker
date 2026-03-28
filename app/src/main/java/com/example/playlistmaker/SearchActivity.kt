@@ -18,10 +18,6 @@ class SearchActivity : AppCompatActivity() {
 
     private var inputSearchText: String = DEFAULT_STR
 
-    companion object {
-        const val SAVED_TEXT = "SAVED_TEXT"
-        const val DEFAULT_STR = ""
-    }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -47,7 +43,6 @@ class SearchActivity : AppCompatActivity() {
 
         searchEditText.setOnFocusChangeListener { _, hasFocus ->
             if (hasFocus && searchEditText.text.isNotEmpty()) {
-//            if (hasFocus ) {
                 showKeyboard(searchEditText)
             }
         }
@@ -97,5 +92,9 @@ class SearchActivity : AppCompatActivity() {
     private fun hideKeyboard(view: View) {
         val imm = getSystemService(INPUT_METHOD_SERVICE) as InputMethodManager
         imm.hideSoftInputFromWindow(view.windowToken, 0)
+    }
+    companion object {
+        const val SAVED_TEXT = "SAVED_TEXT"
+        const val DEFAULT_STR = ""
     }
 }
