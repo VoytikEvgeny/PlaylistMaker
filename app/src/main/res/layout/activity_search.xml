@@ -37,12 +37,15 @@
             android:layout_marginTop="8dp"
             android:layout_marginBottom="8dp"
             android:background="@drawable/edittext_bkg"
+            android:imeOptions="actionDone"
+            android:singleLine="true"
             />
 
         <ImageButton
             android:id="@+id/clearIcon"
             style="@style/ClearIcon"
             android:src="@drawable/ic_clear_12dp"
+            android:contentDescription="@string/todo"
             />
 
     </FrameLayout>
@@ -54,6 +57,51 @@
         app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
         android:orientation="vertical"
         tools:listitem="@layout/activity_track" />
+
+    <LinearLayout
+        android:id="@+id/no_content"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:orientation="vertical"
+        android:visibility="gone"
+        android:gravity="center_horizontal"
+        tools:ignore="UseCompoundDrawables">
+        <ImageView
+            style="@style/errors_ic_style"
+            android:contentDescription="@string/todo"
+            android:src="@drawable/ic_no_content"
+            />
+        <TextView
+            style="@style/errors_text_style"
+            android:text="@string/nothing_to_find"
+            />
+
+    </LinearLayout>
+
+    <LinearLayout
+        android:id="@+id/no_connect"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:orientation="vertical"
+        android:visibility="gone"
+        android:gravity="center_horizontal"
+        >
+        <ImageView
+            style="@style/errors_ic_style"
+            android:contentDescription="@string/todo"
+            android:src="@drawable/ic_no_connect"
+            />
+        <TextView
+            style="@style/errors_text_style"
+            android:text="@string/no_connect"
+            />
+
+        <Button
+            android:id="@+id/btn_reload"
+            style="@style/btn_reload_style"
+            android:text="@string/reload"
+            />
+    </LinearLayout>
 
 </LinearLayout>
 
