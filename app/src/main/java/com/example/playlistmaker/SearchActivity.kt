@@ -27,7 +27,7 @@ import retrofit2.Response
 class SearchActivity : AppCompatActivity() {
 
     private var inputSearchText: String = DEFAULT_STR
-    private val imdbBaseUrl = "https://itunes.apple.com"
+
 
     private val retrofit = Retrofit.Builder()
         .baseUrl(imdbBaseUrl)
@@ -38,6 +38,8 @@ class SearchActivity : AppCompatActivity() {
     private var tracks = ArrayList<Track>()
     private var trackAdapter: TrackAdapter = TrackAdapter(tracks)
     private var searchTrack: String = ""
+
+    private lateinit var rvTrack: RecyclerView
 
     @SuppressLint("NotifyDataSetChanged")
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -51,12 +53,15 @@ class SearchActivity : AppCompatActivity() {
             finish()
         }
 
+        rvTrack = findViewById(R.id.rvTrack)
+
         val recyclerView = initSongsRecyclerView()
         val noContentView = findViewById<LinearLayout>(R.id.no_content)
         val noConnectView = findViewById<LinearLayout>(R.id.no_connect)
 
         val searchEditText = findViewById<EditText>(R.id.searchEditText)
         val clearButton = findViewById<ImageButton>(R.id.clearIcon)
+
 
         val apiCallback = initApiCallback(recyclerView, noConnectView, noContentView)
 
@@ -126,13 +131,14 @@ class SearchActivity : AppCompatActivity() {
                 call: Call<TracksResponse>,
                 response: Response<TracksResponse>
             ) {
-                if (response.code() == 200) {
+                if (response.isSuccessful) {
                     tracks.clear()
-                    if (response.body()?.results?.isNotEmpty() == true) {
+                    val responseFromApi = response.body()?.results
+                    if (responseFromApi?.isNotEmpty() == true) {
                         allGone(recyclerView, noConnectView, noContentView)
                         recyclerView.visibility = View.VISIBLE
 
-                        tracks.addAll(response.body()?.results!!)
+                        tracks.addAll(responseFromApi)
                         trackAdapter.notifyDataSetChanged()
                     } else {
                         allGone(recyclerView, noConnectView, noContentView)
@@ -152,11 +158,8 @@ class SearchActivity : AppCompatActivity() {
     }
 
     private fun initSongsRecyclerView(): RecyclerView {
-
-        return findViewById<RecyclerView>(R.id.rvTrack)
-            .apply {
-                adapter = trackAdapter
-            }
+        rvTrack.adapter = trackAdapter
+        return rvTrack
     }
 
     override fun onSaveInstanceState(outState: Bundle) {
@@ -173,5 +176,8 @@ class SearchActivity : AppCompatActivity() {
     companion object {
         const val SAVED_TEXT = "SAVED_TEXT"
         const val DEFAULT_STR = ""
+
+        const val imdbBaseUrl = "https://itunes.apple.com"
+
     }
 }
