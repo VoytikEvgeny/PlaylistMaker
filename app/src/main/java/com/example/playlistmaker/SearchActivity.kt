@@ -1,7 +1,6 @@
 package com.example.playlistmaker
 
 import android.annotation.SuppressLint
-import android.content.Context
 import android.os.Bundle
 import android.text.Editable
 import android.text.TextWatcher
@@ -12,34 +11,33 @@ import android.widget.Button
 import android.widget.EditText
 import android.widget.ImageButton
 import android.widget.LinearLayout
+import android.widget.TextView
 import android.widget.Toolbar
 import androidx.appcompat.app.AppCompatActivity
-
-import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
-
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
 
 class SearchActivity : AppCompatActivity() {
-
     private var inputSearchText: String = DEFAULT_STR
-
-
     private val retrofit = Retrofit.Builder()
         .baseUrl(imdbBaseUrl)
         .addConverterFactory(GsonConverterFactory.create())
         .build()
-
     private val trackApiService = retrofit.create(SearchTrackApi::class.java)
     private var tracks = ArrayList<Track>()
-    private var trackAdapter: TrackAdapter = TrackAdapter(tracks)
+    private var trackAdapter: TrackAdapter? = null
     private var searchTrack: String = ""
-
+    private var searchHistory: SearchHistory? = null
     private lateinit var rvTrack: RecyclerView
+    private var recyclerView: RecyclerView? = null
+    private var noContentView: LinearLayout? = null
+    private var noConnectView: LinearLayout? = null
+    private var clearHistoryButton: Button? = null
+    private var youSearchTitle: TextView? = null
 
     @SuppressLint("NotifyDataSetChanged")
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -49,21 +47,25 @@ class SearchActivity : AppCompatActivity() {
         val toolbar = findViewById<Toolbar>(R.id.back_button)
         toolbar.setNavigationOnClickListener {
             onBackPressedDispatcher.onBackPressed()
-
             finish()
         }
 
-        rvTrack = findViewById(R.id.rvTrack)
-
-        val recyclerView = initSongsRecyclerView()
-        val noContentView = findViewById<LinearLayout>(R.id.no_content)
-        val noConnectView = findViewById<LinearLayout>(R.id.no_connect)
-
         val searchEditText = findViewById<EditText>(R.id.searchEditText)
         val clearButton = findViewById<ImageButton>(R.id.clearIcon)
+        val apiCallback = initApiCallback()
 
+        rvTrack = findViewById(R.id.rvTrack)
+        recyclerView = initSongsRecyclerView()
+        noContentView = findViewById<LinearLayout>(R.id.no_content)
+        noConnectView = findViewById<LinearLayout>(R.id.no_connect)
+        clearHistoryButton = findViewById<Button>(R.id.clear_history)
+        youSearchTitle = findViewById<TextView>(R.id.search_history_text)
 
-        val apiCallback = initApiCallback(recyclerView, noConnectView, noContentView)
+        clearHistoryButton?.setOnClickListener {
+            tracks.clear()
+            searchHistory?.clearHistory()
+            allGone()
+        }
 
         clearButton.setOnClickListener {
             searchEditText.text.clear()
@@ -73,8 +75,22 @@ class SearchActivity : AppCompatActivity() {
                 0
             )
             tracks.clear()
-            trackAdapter.notifyDataSetChanged()
-            allGone(recyclerView, noConnectView, noContentView)
+            allGone()
+            if (searchHistory?.tracks?.isNotEmpty() == true) {
+                tracks.addAll(searchHistory!!.tracks)
+                settingVisibilitySearchHistory(true)
+            }
+            trackAdapter!!.notifyDataSetChanged()
+        }
+
+        searchEditText.setOnFocusChangeListener { _, onFocus ->
+            allGone()
+            if (onFocus && searchHistory?.tracks?.isNotEmpty() == true) {
+                tracks.clear()
+                tracks.addAll(searchHistory!!.tracks)
+                trackAdapter?.notifyDataSetChanged()
+                settingVisibilitySearchHistory(true)
+            }
         }
 
         searchEditText.addTextChangedListener(object : TextWatcher {
@@ -84,15 +100,17 @@ class SearchActivity : AppCompatActivity() {
             override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {
                 if (!s.isNullOrEmpty()) {
                     clearButton.visibility = View.VISIBLE
+                    allGone()
                 } else {
                     clearButton.visibility = View.GONE
+                    allGone()
+                    settingVisibilitySearchHistory(true)
                 }
             }
 
             override fun afterTextChanged(s: Editable?) {
                 inputSearchText = s.toString()
             }
-
         })
 
         searchEditText.setOnEditorActionListener { fieldSearch, actionId, _ ->
@@ -110,21 +128,25 @@ class SearchActivity : AppCompatActivity() {
 
     }
 
-    private fun allGone(
-        recyclerView: RecyclerView,
-        noConnectView: LinearLayout,
-        noContentView: LinearLayout
-    ) {
-        recyclerView.visibility = View.GONE
-        noConnectView.visibility = View.GONE
-        noContentView.visibility = View.GONE
+    private fun allGone() {
+        noConnectView?.visibility = View.GONE
+        noContentView?.visibility = View.GONE
+        settingVisibilitySearchHistory(false)
     }
 
-    private fun initApiCallback(
-        recyclerView: RecyclerView,
-        noConnectView: LinearLayout,
-        noContentView: LinearLayout
-    ): Callback<TracksResponse> {
+    private fun settingVisibilitySearchHistory(visibility: Boolean) {
+        if (visibility) {
+            recyclerView?.visibility = View.VISIBLE
+            clearHistoryButton?.visibility = View.VISIBLE
+            youSearchTitle?.visibility = View.VISIBLE
+        } else {
+            recyclerView?.visibility = View.GONE
+            clearHistoryButton?.visibility = View.GONE
+            youSearchTitle?.visibility = View.GONE
+        }
+    }
+
+    private fun initApiCallback(): Callback<TracksResponse> {
         return (object : Callback<TracksResponse> {
             @SuppressLint("NotifyDataSetChanged")
             override fun onResponse(
@@ -135,29 +157,44 @@ class SearchActivity : AppCompatActivity() {
                     tracks.clear()
                     val responseFromApi = response.body()?.results
                     if (responseFromApi?.isNotEmpty() == true) {
-                        allGone(recyclerView, noConnectView, noContentView)
-                        recyclerView.visibility = View.VISIBLE
+                        allGone()
+                        recyclerView?.visibility = View.VISIBLE
 
                         tracks.addAll(responseFromApi)
-                        trackAdapter.notifyDataSetChanged()
+                        trackAdapter!!.notifyDataSetChanged()
                     } else {
-                        allGone(recyclerView, noConnectView, noContentView)
-                        noContentView.visibility = View.VISIBLE
+                        allGone()
+                        noContentView?.visibility = View.VISIBLE
                     }
                 } else {
-                    allGone(recyclerView, noConnectView, noContentView)
-                    noContentView.visibility = View.VISIBLE
+                    allGone()
+                    noContentView?.visibility = View.VISIBLE
                 }
             }
 
             override fun onFailure(call: Call<TracksResponse>, t: Throwable) {
-                allGone(recyclerView, noConnectView, noContentView)
-                noConnectView.visibility = View.VISIBLE
+                allGone()
+                noConnectView?.visibility = View.VISIBLE
             }
         })
     }
 
+    @SuppressLint("NotifyDataSetChanged")
     private fun initSongsRecyclerView(): RecyclerView {
+        val sharedPreferences = getSharedPreferences(APPLICATION_PREFERENCES, MODE_PRIVATE)
+        searchHistory = SearchHistory(sharedPreferences)
+        sharedPreferences.registerOnSharedPreferenceChangeListener { _, key ->
+            if (TRACK_HISTORY == key) {
+                tracks.clear()
+                tracks.addAll(searchHistory!!.tracks)
+                allGone()
+                rvTrack.visibility = View.VISIBLE
+                youSearchTitle?.visibility = View.VISIBLE
+                clearHistoryButton?.visibility = View.VISIBLE
+                trackAdapter!!.notifyDataSetChanged()
+            }
+        }
+        trackAdapter = TrackAdapter(tracks, searchHistory!!)
         rvTrack.adapter = trackAdapter
         return rvTrack
     }
@@ -176,8 +213,6 @@ class SearchActivity : AppCompatActivity() {
     companion object {
         const val SAVED_TEXT = "SAVED_TEXT"
         const val DEFAULT_STR = ""
-
         const val imdbBaseUrl = "https://itunes.apple.com"
-
     }
 }
