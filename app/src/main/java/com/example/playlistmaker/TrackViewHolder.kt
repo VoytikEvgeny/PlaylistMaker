@@ -1,6 +1,7 @@
 package com.example.playlistmaker
 
 import android.content.Context
+import android.content.Intent
 import android.util.TypedValue
 import android.view.View
 import android.widget.ImageView
@@ -9,25 +10,36 @@ import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
 import com.bumptech.glide.load.resource.bitmap.RoundedCorners
 import com.bumptech.glide.request.RequestOptions
+import com.google.gson.Gson
 import java.text.SimpleDateFormat
 import java.util.Locale
 
-class TrackViewHolder(itemView: View,trackList: List<Track>,
-                      private val searchHistory: SearchHistory
+class TrackViewHolder(
+    itemView: View, trackList: List<Track>,
+    private val searchHistory: SearchHistory
 ) : RecyclerView.ViewHolder(itemView) {
     private val ivArtwork: ImageView = itemView.findViewById(R.id.ivArtwork)
     private val tvTrackName: TextView = itemView.findViewById(R.id.tvTrackName)
     private val tvArtistName: TextView = itemView.findViewById(R.id.tvArtistName)
     private val tvTrackTime: TextView = itemView.findViewById(R.id.tvTrackTime)
+    private val gson: Gson = Gson()
 
     init {
         itemView.setOnClickListener {
             val position = absoluteAdapterPosition
             if (position != RecyclerView.NO_POSITION) {
                 val clickedItem = trackList[position]
+                showPlayerActivity(itemView.context, clickedItem)
                 searchHistory.addToHistory(clickedItem)
             }
         }
+    }
+
+    private fun showPlayerActivity(context: Context?, clickedItem: Track) {
+        val playerIntent = Intent(context, PlayerActivity::class.java)
+            .putExtra(CLICKED_TRACK, gson.toJson(clickedItem))
+
+        context?.startActivity(playerIntent)
     }
 
     fun bind(item: Track) {
@@ -35,7 +47,8 @@ class TrackViewHolder(itemView: View,trackList: List<Track>,
         tvTrackName.text = item.trackName
         tvArtistName.text = ""
         tvArtistName.text = item.artistName
-        tvTrackTime.text = SimpleDateFormat("mm:ss", Locale.getDefault()).format(item.trackTimeMillis)
+        tvTrackTime.text =
+            SimpleDateFormat("mm:ss", Locale.getDefault()).format(item.trackTimeMillis)
 
         Glide.with(itemView.context)
             .load(item.artworkUrl100)

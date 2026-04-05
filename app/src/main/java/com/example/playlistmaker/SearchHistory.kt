@@ -5,7 +5,6 @@ import androidx.core.content.edit
 import com.google.gson.Gson
 import com.google.gson.reflect.TypeToken
 
-val TRACK_HISTORY="track_history"
 class SearchHistory(private val sharedPrefs: SharedPreferences) {
     private val MAX_HISTORY_SIZE = 10
     val tracks = ArrayList<Track>()
@@ -18,7 +17,7 @@ class SearchHistory(private val sharedPrefs: SharedPreferences) {
     }
 
     fun addToHistory(track: Track) {
-        if(tracks.contains(track)){
+        if (tracks.contains(track)) {
             tracks.remove(track)
         }
         tracks.add(0, track)

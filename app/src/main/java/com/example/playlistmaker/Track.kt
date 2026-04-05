@@ -6,8 +6,11 @@ data class Track(
     val artistName: String,
     val trackTimeMillis: Long,
     val artworkUrl100: String,
-)
-{
+    val collectionName: String,
+    val releaseDate: String,
+    val primaryGenreName: String,
+    val country: String
+) {
     override fun equals(other: Any?): Boolean {
         if (this === other) return true
         if (javaClass != other?.javaClass) return false
