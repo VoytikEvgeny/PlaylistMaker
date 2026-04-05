@@ -12,17 +12,28 @@ import com.bumptech.glide.request.RequestOptions
 import java.text.SimpleDateFormat
 import java.util.Locale
 
-class TrackViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
-
+class TrackViewHolder(itemView: View,trackList: List<Track>,
+                      private val searchHistory: SearchHistory
+) : RecyclerView.ViewHolder(itemView) {
     private val ivArtwork: ImageView = itemView.findViewById(R.id.ivArtwork)
     private val tvTrackName: TextView = itemView.findViewById(R.id.tvTrackName)
     private val tvArtistName: TextView = itemView.findViewById(R.id.tvArtistName)
     private val tvTrackTime: TextView = itemView.findViewById(R.id.tvTrackTime)
 
+    init {
+        itemView.setOnClickListener {
+            val position = absoluteAdapterPosition
+            if (position != RecyclerView.NO_POSITION) {
+                val clickedItem = trackList[position]
+                searchHistory.addToHistory(clickedItem)
+            }
+        }
+    }
+
     fun bind(item: Track) {
 
         tvTrackName.text = item.trackName
-        tvArtistName.setText("")
+        tvArtistName.text = ""
         tvArtistName.text = item.artistName
         tvTrackTime.text = SimpleDateFormat("mm:ss", Locale.getDefault()).format(item.trackTimeMillis)
 
@@ -33,7 +44,6 @@ class TrackViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
             .apply(RequestOptions.bitmapTransform(RoundedCorners(dpToPx(8.0f, itemView.context))))
             .fitCenter()
             .into(ivArtwork)
-
     }
 
     private fun dpToPx(dp: Float, context: Context): Int {
