@@ -75,7 +75,7 @@ class PlayerActivity : AppCompatActivity() {
     }
 
     private fun getCoverArtwork(track: Track): String {
-        return track.artworkUrl100.replaceAfterLast('/', "512x512bb.jpg1")
+        return track.artworkUrl100.replaceAfterLast('/', "512x512bb.jpg")
     }
 
     private fun setText(text: String, key: TextView?, view: TextView?) {
