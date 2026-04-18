@@ -8,15 +8,14 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.core.net.toUri
 import com.google.android.material.switchmaterial.SwitchMaterial
 
-class SettingsActivity: AppCompatActivity() {
+class SettingsActivity : AppCompatActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_settings)
 
         val toolbar = findViewById<Toolbar>(R.id.back_button)
-        val sharedPrefs = getSharedPreferences(APPLICATION_PREFERENCES, MODE_PRIVATE)
-        val themeSwitcher=findViewById<SwitchMaterial>(R.id.themeSwitcher)
+        val themeSwitcher = findViewById<SwitchMaterial>(R.id.themeSwitcher)
         val buttonShare = findViewById<TextView>(R.id.share_text)
         val buttonCheckSupport = findViewById<TextView>(R.id.support_text)
         val buttonAgreement = findViewById<TextView>(R.id.license_text)
@@ -26,7 +25,8 @@ class SettingsActivity: AppCompatActivity() {
             finish()
         }
 
-        themeSwitcher.isChecked = sharedPrefs.getBoolean(DARK_THEME_KEY, false)
+        themeSwitcher.isChecked =
+            (application as App).getSharedPrefs().getBoolean(DARK_THEME_KEY, false)
         themeSwitcher.setOnCheckedChangeListener { switcher, checked ->
             (applicationContext as App).switchTheme(checked)
         }

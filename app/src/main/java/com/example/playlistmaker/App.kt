@@ -7,6 +7,9 @@ import androidx.core.content.edit
 
 const val APPLICATION_PREFERENCES="Application_preferences"
 const val DARK_THEME_KEY="theme_preferences"
+const val TRACK_HISTORY="track_history"
+
+const val CLICKED_TRACK="clicked_track"
 class App: Application() {
     private var darkTheme=false
     private var sharedPrefs : SharedPreferences? = null
@@ -29,6 +32,12 @@ class App: Application() {
         sharedPrefs?.edit {
             putBoolean(DARK_THEME_KEY, darkTheme)
         }
+    }
+    fun getSharedPrefs(): SharedPreferences{
+        if(sharedPrefs ==null){
+            sharedPrefs = getSharedPreferences(APPLICATION_PREFERENCES, MODE_PRIVATE)
+        }
+        return sharedPrefs!!
     }
 
 }
