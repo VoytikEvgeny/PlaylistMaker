@@ -2,6 +2,8 @@ package com.example.playlistmaker
 
 import android.annotation.SuppressLint
 import android.os.Bundle
+import android.os.Handler
+import android.os.Looper
 import android.text.Editable
 import android.text.TextWatcher
 import android.view.View
@@ -11,15 +13,16 @@ import android.widget.Button
 import android.widget.EditText
 import android.widget.ImageButton
 import android.widget.LinearLayout
+import android.widget.ProgressBar
 import android.widget.TextView
 import android.widget.Toolbar
 import androidx.appcompat.app.AppCompatActivity
 import androidx.recyclerview.widget.RecyclerView
-import retrofit2.Retrofit
-import retrofit2.converter.gson.GsonConverterFactory
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
+import retrofit2.Retrofit
+import retrofit2.converter.gson.GsonConverterFactory
 
 class SearchActivity : AppCompatActivity() {
     private var inputSearchText: String = DEFAULT_STR
@@ -38,6 +41,16 @@ class SearchActivity : AppCompatActivity() {
     private var noConnectView: LinearLayout? = null
     private var clearHistoryButton: Button? = null
     private var youSearchTitle: TextView? = null
+    private var progressBar: ProgressBar? = null
+    private var apiCallback = initApiCallback()
+    private val searchRunnable = Runnable {
+        doSearch()
+    }
+    private val handler = Handler(Looper.getMainLooper())
+    private fun searchDebounce() {
+        handler.removeCallbacks(searchRunnable)
+        handler.postDelayed(searchRunnable, SEARCH_DEBOUNCE_DELAY)
+    }
 
     @SuppressLint("NotifyDataSetChanged")
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -60,6 +73,8 @@ class SearchActivity : AppCompatActivity() {
         noConnectView = findViewById<LinearLayout>(R.id.no_connect)
         clearHistoryButton = findViewById<Button>(R.id.clear_history)
         youSearchTitle = findViewById<TextView>(R.id.search_history_text)
+
+        progressBar = findViewById(R.id.progress_bar)
 
         clearHistoryButton?.setOnClickListener {
             tracks.clear()
@@ -99,6 +114,7 @@ class SearchActivity : AppCompatActivity() {
 
             override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {
                 if (!s.isNullOrEmpty()) {
+                    searchDebounce()
                     clearButton.visibility = View.VISIBLE
                     allGone()
                 } else {
@@ -117,6 +133,9 @@ class SearchActivity : AppCompatActivity() {
             if (actionId == EditorInfo.IME_ACTION_DONE) {
                 searchTrack = fieldSearch.text.toString().trim()
                 trackApiService.search(searchTrack).enqueue(apiCallback)
+                handler.removeCallbacks(searchRunnable)
+                doSearch()
+
             }
             false
         }
@@ -153,6 +172,7 @@ class SearchActivity : AppCompatActivity() {
                 call: Call<TracksResponse>,
                 response: Response<TracksResponse>
             ) {
+                progressBar?.visibility = View.GONE
                 if (response.isSuccessful) {
                     tracks.clear()
                     val responseFromApi = response.body()?.results
@@ -173,6 +193,7 @@ class SearchActivity : AppCompatActivity() {
             }
 
             override fun onFailure(call: Call<TracksResponse>, t: Throwable) {
+                progressBar?.visibility = View.GONE
                 allGone()
                 noConnectView?.visibility = View.VISIBLE
             }
@@ -210,9 +231,16 @@ class SearchActivity : AppCompatActivity() {
         findViewById<EditText>(R.id.searchEditText).setText(inputSearchText)
     }
 
+    private fun doSearch() {
+        allGone()
+        progressBar?.visibility = View.VISIBLE
+        trackApiService.search(inputSearchText).enqueue(apiCallback)
+    }
+
     companion object {
         const val SAVED_TEXT = "SAVED_TEXT"
         const val DEFAULT_STR = ""
         const val imdbBaseUrl = "https://itunes.apple.com"
+        private const val SEARCH_DEBOUNCE_DELAY = 2000L
     }
 }
