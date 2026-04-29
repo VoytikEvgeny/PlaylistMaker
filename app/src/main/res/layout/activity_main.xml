@@ -9,7 +9,7 @@
     android:orientation="vertical"
     android:padding="@dimen/padding_main"
     android:theme="@style/Theme.PlaylistMaker"
-    tools:context=".MainActivity">
+    tools:context=".presentation.ui.main.MainActivity">
 
 
     <TextView
@@ -21,20 +21,20 @@
 
 
     <Button
-        android:id="@+id/search"
+        android:id="@+id/searchB"
         style="@style/MainMenuButton"
         android:text="@string/search_name"
         app:icon="@drawable/ic_search_24" />
 
 
     <Button
-        android:id="@+id/library"
+        android:id="@+id/libraryB"
         style="@style/MainMenuButton"
         android:text="@string/library_name"
         app:icon="@drawable/ic_library_24" />
 
     <Button
-        android:id="@+id/settings"
+        android:id="@+id/settingsB"
         style="@style/MainMenuButton"
         android:layout_marginBottom="@dimen/padding_main_buttom"
         android:text="@string/settings_name"

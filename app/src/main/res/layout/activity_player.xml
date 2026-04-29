@@ -11,7 +11,7 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         style="@style/background_style"
-        tools:context=".PlayerActivity">
+        tools:context=".presentation.ui.player.PlayerActivity">
 
         <androidx.constraintlayout.widget.Guideline
             android:id="@+id/leftBorder"
