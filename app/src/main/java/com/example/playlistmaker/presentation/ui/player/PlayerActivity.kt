@@ -15,6 +15,7 @@ import com.bumptech.glide.Glide
 import com.bumptech.glide.load.resource.bitmap.RoundedCorners
 import com.example.playlistmaker.Creator
 import com.example.playlistmaker.R
+import com.example.playlistmaker.Utils
 import com.example.playlistmaker.presentation.ui.search.DELAYED
 
 class PlayerActivity : AppCompatActivity() {
@@ -77,7 +78,7 @@ class PlayerActivity : AppCompatActivity() {
             .load(artworkUrlHR)
             .placeholder(R.drawable.ic_placeholder_45)
             .centerInside()
-            .transform(RoundedCorners(8))
+            .transform(RoundedCorners(Utils.dpToPx(8.0f, this)))
             .into(tvPoster)
 
 

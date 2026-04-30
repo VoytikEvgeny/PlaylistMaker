@@ -14,10 +14,11 @@ class SharedPrefsImpl : SharedPrefs, ThemeManager {
         const val DARK_THEME_KEY = "dark_theme"
         const val HISTORY_KEY = "search_history_key"
     }
+    private val gson= Gson()
 
     override fun saveHistory(history: List<TrackDto>, context: Context) {
         val sharedPrefs = context.getSharedPreferences(APP_PREFERENCES, MODE_PRIVATE)
-        val json = Gson().toJson(history)
+        val json = gson.toJson(history)
         sharedPrefs.edit {
             putString(HISTORY_KEY, json)
         }
@@ -29,7 +30,7 @@ class SharedPrefsImpl : SharedPrefs, ThemeManager {
         var list: MutableList<TrackDto> = mutableListOf()
         if (json != null) {
             val type = object : TypeToken<MutableList<TrackDto>>() {}.type
-            list = Gson().fromJson(json, type)
+            list = gson.fromJson(json, type)
             return list
         } else {
             return list

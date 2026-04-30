@@ -3,6 +3,7 @@ package com.example.playlistmaker.data.dto
 import android.content.Context
 import com.example.playlistmaker.Creator
 import com.example.playlistmaker.domain.api.TrackHistoryManager
+import com.example.playlistmaker.historyListSize
 
 object TrackHistoryManagerImpl : TrackHistoryManager {
 
@@ -16,10 +17,10 @@ object TrackHistoryManagerImpl : TrackHistoryManager {
 
     override fun addTrackToHistory(track: TrackDto) {
 
-        if ((trackHistory.size < 10) && !trackHistory.contains(track)) {
+        if ((trackHistory.size < historyListSize) && !trackHistory.contains(track)) {
             trackHistory.add(0, track)
-        } else if ((trackHistory.size >= 10) && !trackHistory.contains(track)) {
-            trackHistory.removeAt(9)
+        } else if ((trackHistory.size >= historyListSize) && !trackHistory.contains(track)) {
+            trackHistory.removeAt(historyListSize-1)
             trackHistory.add(0, track)
         } else if (trackHistory.contains(track)) {
             trackHistory.remove(track)

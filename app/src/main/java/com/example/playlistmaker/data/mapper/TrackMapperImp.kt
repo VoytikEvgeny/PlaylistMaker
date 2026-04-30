@@ -1,10 +1,7 @@
-package com.example.playlistmaker.domain.impl
+package com.example.playlistmaker.data.mapper
 
 import com.example.playlistmaker.data.dto.TrackDto
-import com.example.playlistmaker.data.mapper.TrackMapper
 import com.example.playlistmaker.domain.model.Track
-import java.text.SimpleDateFormat
-import java.util.Locale
 
 class TrackMapperImpl : TrackMapper {
 
@@ -24,7 +21,6 @@ class TrackMapperImpl : TrackMapper {
     }
 
     override fun reversedMap(track: Track): TrackDto {
-        val yearFormatter = SimpleDateFormat("yyyy", Locale.getDefault())
         return TrackDto(
             trackId = track.trackId,
             trackName = track.trackName,

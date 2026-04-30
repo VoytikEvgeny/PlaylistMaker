@@ -55,9 +55,9 @@ class SettingsActivity : AppCompatActivity() {
         }
 
         findViewById<MaterialTextView>(R.id.support_text).setOnClickListener {
-            val intent = Intent(Intent.ACTION_SEND).apply {
-                type = "message/rfc822"
-                putExtra(Intent.EXTRA_EMAIL, arrayOf(R.string.my_email))
+            val intent = Intent(Intent.ACTION_SENDTO).apply {
+                data = "mailto:".toUri()
+                putExtra(Intent.EXTRA_EMAIL, arrayOf(getString(R.string.my_email)))
                 putExtra(Intent.EXTRA_SUBJECT, getString(R.string.email_subject))
                 putExtra(Intent.EXTRA_TEXT,getString(R.string.email_text))
             }
@@ -73,7 +73,6 @@ class SettingsActivity : AppCompatActivity() {
 
         findViewById<Toolbar>(R.id.back_button).setNavigationOnClickListener {
             onBackPressedDispatcher.onBackPressed()
-//            finish()
         }
 
     }

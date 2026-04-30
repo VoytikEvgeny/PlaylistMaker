@@ -7,6 +7,7 @@ const val APP_PREFERENCES = "AppPreferences"
 const val DARK_THEME_KEY = "dark_theme"
 const val HISTORY_KEY = "search_history_key"
 
+const val historyListSize=10
 
 class App : Application() {
 
