@@ -5,7 +5,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:theme="@style/Base.Theme.PlaylistMaker"
     style="@style/TrackItem"
-    tools:context=".SearchActivity">
+    >
 
     <ImageView
         android:id="@+id/ivArtwork"

@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
-<manifest xmlns:android="http://schemas.android.com/apk/res/android">
+<manifest xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools">
 
     <uses-permission android:name="android.permission.INTERNET" />
 
@@ -14,19 +15,19 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.MaterialComponents.DayNight.NoActionBar">
         <activity
-            android:name=".PlayerActivity"
+            android:name=".presentation.ui.search.SearchActivity"
             android:exported="false" />
         <activity
-            android:name=".SearchActivity"
+            android:name=".presentation.ui.player.PlayerActivity"
             android:exported="false" />
         <activity
-            android:name=".LibraryActivity"
+            android:name=".presentation.ui.settings.SettingsActivity"
             android:exported="false" />
         <activity
-            android:name=".SettingsActivity"
+            android:name=".presentation.ui.library.LibraryActivity"
             android:exported="false" />
         <activity
-            android:name=".MainActivity"
+            android:name=".presentation.ui.main.MainActivity"
             android:exported="true">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
