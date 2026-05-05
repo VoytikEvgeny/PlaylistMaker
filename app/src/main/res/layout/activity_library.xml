@@ -4,13 +4,14 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    style="@style/background_style"
     >
     <androidx.constraintlayout.widget.ConstraintLayout
         android:id="@+id/main"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         style="@style/background_style"
-        tools:context=".presentation.ui.library.LibraryActivity">
+        tools:context=".library.ui.LibraryActivity">
 
     <Toolbar
         android:id="@+id/back_button"
