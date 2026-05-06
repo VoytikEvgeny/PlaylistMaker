@@ -1,10 +1,10 @@
-package com.example.playlistmaker.sharing.domain.impl
+package com.example.playlistmaker.sharing.data.impl
 
 import android.content.Intent
+import com.example.playlistmaker.sharing.data.ExternalNavigator
+import com.example.playlistmaker.sharing.data.SharingInteractor
 import com.example.playlistmaker.sharing.domain.AgreementData
-import com.example.playlistmaker.sharing.domain.ExternalNavigator
 import com.example.playlistmaker.sharing.domain.ShareData
-import com.example.playlistmaker.sharing.domain.SharingInteractor
 import com.example.playlistmaker.sharing.domain.SharingRepository
 import com.example.playlistmaker.sharing.domain.SupportData
 

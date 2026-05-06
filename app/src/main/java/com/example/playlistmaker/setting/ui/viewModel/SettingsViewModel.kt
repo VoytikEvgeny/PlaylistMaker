@@ -11,7 +11,7 @@ import com.example.playlistmaker.setting.domain.SettingsInteractor
 import com.example.playlistmaker.setting.domain.ThemeSettings
 import com.example.playlistmaker.setting.ui.NavigationEvent
 import com.example.playlistmaker.setting.ui.SettingsEvent
-import com.example.playlistmaker.sharing.domain.SharingInteractor
+import com.example.playlistmaker.sharing.data.SharingInteractor
 
 class SettingsViewModel(
     private val sharingInteractor: SharingInteractor,

@@ -41,13 +41,10 @@ class SearchViewModel(
     fun getSearchLiveData(): LiveData<TrackState> = mediatorStateLiveData
     private val historyLiveData = MutableLiveData<MutableList<Track>>()
     fun getHistoryLiveData(): LiveData<MutableList<Track>> = historyLiveData
-    private val searchTextLiveData = MutableLiveData<String>("")
-    fun getSearchTextLiveData(): LiveData<String> = searchTextLiveData
     private var latestSearchText: String? = null
     fun searchDebounce(changedText: String) {
         if (latestSearchText == changedText && getSearchLiveData().value != TrackState.Error) return
         this.latestSearchText = changedText
-        searchTextLiveData.postValue(changedText)
         handler.removeCallbacksAndMessages(SEARCH_REQUEST_TOKEN)
         val searchRunnable = Runnable { searchRequest(changedText) }
         val postTime = SystemClock.uptimeMillis() + SEARCH_DEBOUNCE_DELAY

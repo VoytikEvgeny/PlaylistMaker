@@ -20,9 +20,9 @@ import com.example.playlistmaker.databinding.ActivitySearchBinding
 import com.example.playlistmaker.player.ui.activity.PlayerActivity
 import com.example.playlistmaker.search.domain.models.Track
 import com.example.playlistmaker.search.ui.SearchHistoryAdapter
-import com.example.playlistmaker.search.ui.viewModel.SearchViewModel
 import com.example.playlistmaker.search.ui.TrackListAdapter
 import com.example.playlistmaker.search.ui.TrackState
+import com.example.playlistmaker.search.ui.viewModel.SearchViewModel
 
 class SearchActivity : AppCompatActivity() {
     companion object {
@@ -119,7 +119,7 @@ class SearchActivity : AppCompatActivity() {
 
     private fun setupContent() {
         viewModel.getHistoryList()
-        binding.searchEditText.setText(viewModel.getSearchTextLiveData().value)
+        binding.searchEditText.setText(searchString)
     }
 
     private fun render(state: TrackState) {

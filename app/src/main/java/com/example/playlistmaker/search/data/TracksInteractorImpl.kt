@@ -1,4 +1,4 @@
-package com.example.playlistmaker.search.domain.impl
+package com.example.playlistmaker.search.data
 
 import com.example.playlistmaker.search.Resource
 import com.example.playlistmaker.search.domain.TracksInteractor

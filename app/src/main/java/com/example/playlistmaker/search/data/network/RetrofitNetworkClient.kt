@@ -3,8 +3,8 @@ package com.example.playlistmaker.search.data.network
 import android.content.Context
 import android.net.ConnectivityManager
 import android.net.NetworkCapabilities
+import com.example.playlistmaker.I_TUNES_BASE_URL
 import com.example.playlistmaker.search.data.NetworkClient
-import com.example.playlistmaker.search.data.network.SearchTrackApiService
 import com.example.playlistmaker.search.data.dto.Response
 import com.example.playlistmaker.search.data.dto.ResponseStatus
 import com.example.playlistmaker.search.data.dto.TracksSearchRequest
@@ -14,9 +14,8 @@ import java.io.IOException
 
 
 class RetrofitNetworkClient(private val context: Context) : NetworkClient {
-    private val iTunesBaseUrl = "https://itunes.apple.com"
     private val retrofit = Retrofit.Builder()
-        .baseUrl(iTunesBaseUrl)
+        .baseUrl(I_TUNES_BASE_URL)
         .addConverterFactory(GsonConverterFactory.create())
         .build()
     private val iTunesService = retrofit.create(SearchTrackApiService::class.java)

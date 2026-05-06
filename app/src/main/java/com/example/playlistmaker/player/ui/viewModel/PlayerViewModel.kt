@@ -10,6 +10,8 @@ import com.example.playlistmaker.creator.Creator
 import com.example.playlistmaker.player.domain.TrackPlayer
 import com.example.playlistmaker.player.ui.PlayStatus
 import com.example.playlistmaker.player.ui.TrackScreenState
+import java.text.SimpleDateFormat
+import java.util.Locale
 
 class PlayerViewModel(private val trackPlayer: TrackPlayer) : ViewModel() {
     private var screenStateLiveData = MutableLiveData<TrackScreenState>(TrackScreenState.Loading)
@@ -44,7 +46,7 @@ class PlayerViewModel(private val trackPlayer: TrackPlayer) : ViewModel() {
 
                 override fun onCompletion() {
                     playStatusLiveData.value = PlayStatus(
-                        progress = "00:00",
+                        progress = SimpleDateFormat("mm:ss", Locale.getDefault()).format(0),
                         isPlaying = false,
                     )
                 }
@@ -59,7 +61,7 @@ class PlayerViewModel(private val trackPlayer: TrackPlayer) : ViewModel() {
     }
 
     private fun getCurrentPlayStatus(): PlayStatus {
-        return playStatusLiveData.value ?: PlayStatus(progress = "00:00", isPlaying = false)
+        return playStatusLiveData.value ?: PlayStatus(progress = SimpleDateFormat("mm:ss", Locale.getDefault()).format(0), isPlaying = false)
     }
 
     fun pause() {
