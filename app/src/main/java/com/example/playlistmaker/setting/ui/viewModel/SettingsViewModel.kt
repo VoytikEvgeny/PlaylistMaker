@@ -7,75 +7,49 @@ import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.viewmodel.initializer
 import androidx.lifecycle.viewmodel.viewModelFactory
 import com.example.playlistmaker.creator.Creator
-import com.example.playlistmaker.setting.domain.SettingsInteractor
 import com.example.playlistmaker.setting.domain.ThemeSettings
-import com.example.playlistmaker.setting.ui.NavigationEvent
-import com.example.playlistmaker.setting.ui.SettingsEvent
-import com.example.playlistmaker.sharing.data.SharingInteractor
+import com.example.playlistmaker.sharing.domain.EmailData
 
-class SettingsViewModel(
-    private val sharingInteractor: SharingInteractor,
-    private val settingsInteractor: SettingsInteractor,
-) : ViewModel() {
-    private val navigationEvents = MutableLiveData<SettingsEvent>()
-    fun getNavigationEvents(): LiveData<SettingsEvent> = navigationEvents
+class SettingsViewModel() : ViewModel() {
+    private val SharingInteractor = Creator.provideSharingInteractor()
+    private val SwitchAppThemeInteractor = Creator.provideSettingsInteractor()
+
+    private val darkThemeState = MutableLiveData<ThemeSettings>()
 
     init {
         loadTheme()
     }
 
     private fun loadTheme() {
-        navigationEvents.value = SettingsEvent.Theme(settingsInteractor.getThemeSettings().isDark)
+        darkThemeState.value = getCurrentDarkThemeState()
+    }
+    fun getDarkThemeState(): LiveData<ThemeSettings> = darkThemeState
+
+    fun setCurrentDarkThemeState(darkThemeState: ThemeSettings) {
+        SwitchAppThemeInteractor.updateThemeSetting(darkThemeState)
+        this.darkThemeState.value = darkThemeState
     }
 
-    fun updateTheme(isDark: Boolean) {
-        settingsInteractor.updateThemeSetting(ThemeSettings(isDark))
-        navigationEvents.postValue(
-            SettingsEvent.Theme(isDark)
-        )
+    fun getCurrentDarkThemeState(): ThemeSettings {
+        return SwitchAppThemeInteractor.getThemeSettings()
     }
 
-    fun getIntent(event: NavigationEvent) {
-        when (event) {
-            NavigationEvent.SHARE -> shareApp()
-            NavigationEvent.SUPPORT -> contactSupport()
-            NavigationEvent.AGREEMENT -> openAgreement()
-        }
+    fun shareApp(shareLink: String) {
+        SharingInteractor.shareApp(shareLink)
     }
 
-    private fun shareApp() {
-        navigationEvents.postValue(
-            SettingsEvent.Event(
-                intent = sharingInteractor.shareApp(),
-                errorMessage = sharingInteractor.getShareError()
-            )
-        )
+    fun openSupport(emailData: EmailData) {
+        SharingInteractor.openSupport(emailData)
     }
 
-    private fun contactSupport() {
-        navigationEvents.postValue(
-            SettingsEvent.Event(
-                intent = sharingInteractor.openSupport(),
-                errorMessage = sharingInteractor.getSupportError()
-            )
-        )
-    }
-
-    private fun openAgreement() {
-        navigationEvents.postValue(
-            SettingsEvent.Event(
-                intent = sharingInteractor.openTerms(),
-                errorMessage = sharingInteractor.getUserAgreementError()
-            )
-        )
+    fun userAgreement(openLink: String) {
+        SharingInteractor.userAgreement(openLink)
     }
 
     companion object {
         fun getViewModelFactory(): ViewModelProvider.Factory = viewModelFactory {
             initializer {
-                val settingsInteractor = Creator.provideSettingsInteractor()
-                val sharingInteractor = Creator.provideSharingInteractor()
-                SettingsViewModel(sharingInteractor, settingsInteractor)
+                SettingsViewModel()
             }
         }
     }

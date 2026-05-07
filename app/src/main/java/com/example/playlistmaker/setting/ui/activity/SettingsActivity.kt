@@ -1,20 +1,21 @@
 package com.example.playlistmaker.setting.ui.activity
 
-import android.content.ActivityNotFoundException
 import android.os.Bundle
-import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
+import androidx.appcompat.app.AppCompatDelegate
 import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsCompat
 import androidx.lifecycle.ViewModelProvider
+import com.example.playlistmaker.R
 import com.example.playlistmaker.databinding.ActivitySettingsBinding
-import com.example.playlistmaker.setting.ui.NavigationEvent
-import com.example.playlistmaker.setting.ui.SettingsEvent
+import com.example.playlistmaker.setting.domain.ThemeSettings
 import com.example.playlistmaker.setting.ui.viewModel.SettingsViewModel
+import com.example.playlistmaker.sharing.domain.EmailData
 
 class SettingsActivity : AppCompatActivity() {
     private lateinit var viewModel: SettingsViewModel
     private lateinit var binding: ActivitySettingsBinding
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         binding = ActivitySettingsBinding.inflate(layoutInflater)
@@ -24,10 +25,9 @@ class SettingsActivity : AppCompatActivity() {
             v.setPadding(systemBars.left, systemBars.top, systemBars.right, systemBars.bottom)
             insets
         }
-        viewModel = ViewModelProvider(this, SettingsViewModel.Companion.getViewModelFactory()).get(
+        viewModel = ViewModelProvider(this, SettingsViewModel.getViewModelFactory()).get(
             SettingsViewModel::class.java
         )
-        setupObservers()
         setupClickListeners()
     }
 
@@ -40,34 +40,36 @@ class SettingsActivity : AppCompatActivity() {
             finish()
         }
         binding.themeSwitcher.setOnCheckedChangeListener { _, checked ->
-            viewModel.updateTheme(checked)
+            viewModel.setCurrentDarkThemeState(ThemeSettings(checked))
+        }
+        viewModel.getDarkThemeState().observe(this) { state ->
+            renderDarkThemeState(state)
         }
         binding.shareText.setOnClickListener {
-            viewModel.getIntent(NavigationEvent.SHARE)
+            viewModel.shareApp(this.getString(R.string.android_course_url))
         }
         binding.supportText.setOnClickListener {
-            viewModel.getIntent(NavigationEvent.SUPPORT)
+            viewModel.openSupport(
+                EmailData(
+                    arrayOf(this.getString(R.string.my_email)),
+                    this.getString(R.string.email_subject),
+                    this.getString(R.string.email_text)
+                )
+            )
         }
         binding.licenseText.setOnClickListener {
-            viewModel.getIntent(NavigationEvent.AGREEMENT)
+            viewModel.userAgreement(this.getString(R.string.practicum_offer))
         }
     }
 
-    private fun setupObservers() {
-        viewModel.getNavigationEvents().observe(this) { event ->
-            when (event) {
-                is SettingsEvent.Event -> openApp(event)
-                is SettingsEvent.Theme -> updateSwitch(event.isDark)
+    fun renderDarkThemeState(state: ThemeSettings) {
+        AppCompatDelegate.setDefaultNightMode(
+            if (state.isDark) {
+                AppCompatDelegate.MODE_NIGHT_YES
+            } else {
+                AppCompatDelegate.MODE_NIGHT_NO
             }
-        }
-    }
-
-    private fun openApp(event: SettingsEvent.Event) {
-        try {
-            startActivity(event.intent)
-        } catch (e: ActivityNotFoundException) {
-            Toast.makeText(this, event.errorMessage, Toast.LENGTH_LONG)
-                .show()
-        }
+        )
+        updateSwitch(state.isDark)
     }
 }

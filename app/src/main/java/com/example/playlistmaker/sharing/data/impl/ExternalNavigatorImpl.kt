@@ -1,32 +1,41 @@
 package com.example.playlistmaker.sharing.data.impl
 
+import android.content.Context
 import android.content.Intent
-import android.net.Uri
-import com.example.playlistmaker.sharing.data.ExternalNavigator
-import com.example.playlistmaker.sharing.domain.AgreementData
-import com.example.playlistmaker.sharing.domain.ShareData
-import com.example.playlistmaker.sharing.domain.SupportData
+import androidx.core.net.toUri
+import com.example.playlistmaker.sharing.domain.EmailData
+import com.example.playlistmaker.sharing.domain.ExternalNavigator
 
-class ExternalNavigatorImpl(
+class ExternalNavigatorImpl(val context: Context
 ) : ExternalNavigator {
-    override fun navigateToShare(shareData: ShareData): Intent {
-        return Intent(Intent.ACTION_SEND).apply {
-            type = "text/plain"
-            putExtra(Intent.EXTRA_TEXT, shareData.message)
-        }
+    override fun shareLink(link: String) {
+        val shareIntent = Intent(Intent.ACTION_SEND)
+        shareIntent.type = "text/plain"
+        shareIntent.putExtra(Intent.EXTRA_TEXT, link)
+
+        shareIntent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
+
+        context.startActivity(shareIntent, null)
     }
 
-    override fun navigateToSupport(supportData: SupportData): Intent {
-        return Intent(Intent.ACTION_SENDTO).apply {
-            data = Uri.parse("mailto:")
-            putExtra(Intent.EXTRA_EMAIL, arrayOf(supportData.email))
-            putExtra(Intent.EXTRA_SUBJECT, supportData.subject)
-            putExtra(Intent.EXTRA_TEXT, supportData.message)
-        }
+    override fun openEmail(emailData: EmailData) {
+        val supportIntent = Intent(Intent.ACTION_SENDTO)
+        supportIntent.data = "mailto:".toUri()
+        supportIntent.putExtra(Intent.EXTRA_EMAIL, emailData.email)
+        supportIntent.putExtra(Intent.EXTRA_SUBJECT, emailData.subject)
+        supportIntent.putExtra(Intent.EXTRA_TEXT, emailData.text)
+
+        supportIntent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
+
+        context.startActivity( supportIntent, null)
     }
 
-    override fun navigateToAgreement(agreementData: AgreementData): Intent {
-        val url = Uri.parse(agreementData.url)
-        return Intent(Intent.ACTION_VIEW, url)
+    override fun openLink(link: String) {
+        val userIntent = Intent(Intent.ACTION_VIEW)
+        userIntent.data = link.toUri()
+
+        userIntent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
+
+        context.startActivity( userIntent, null)
     }
 }
