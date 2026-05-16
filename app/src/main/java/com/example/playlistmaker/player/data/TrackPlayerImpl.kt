@@ -7,11 +7,10 @@ import com.example.playlistmaker.player.domain.PlayerRepository
 import com.example.playlistmaker.player.domain.TrackPlayer
 import com.example.playlistmaker.search.domain.models.Track
 
-class TrackPlayerImpl(repository: PlayerRepository) : TrackPlayer {
-
+class TrackPlayerImpl(repository: PlayerRepository, private var mediaPlayer: MediaPlayer? = null) :
+    TrackPlayer {
     private val track = repository.getCurrentTrack()
     private val trackUrl = track.previewUrl
-    private var mediaPlayer: MediaPlayer? = null
     private var currentObserver: TrackPlayer.StatusObserver? = null
     private var isPrepared = false
     private var isPlay = false

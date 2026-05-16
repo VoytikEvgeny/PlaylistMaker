@@ -4,7 +4,7 @@ import com.example.playlistmaker.search.data.dto.TrackDto
 import com.example.playlistmaker.search.domain.models.Track
 
 object DtoToTrackMapper {
-    fun map (dto: TrackDto) : Track {
+    fun map(dto: TrackDto): Track {
         return Track(
             dto.trackId,
             dto.trackName,

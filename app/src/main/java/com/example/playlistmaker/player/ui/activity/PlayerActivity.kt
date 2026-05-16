@@ -1,7 +1,6 @@
 package com.example.playlistmaker.player.ui.activity
 
 import android.os.Bundle
-import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsCompat
@@ -15,9 +14,10 @@ import com.example.playlistmaker.search.domain.models.Track
 import com.example.playlistmaker.utils.dpToPx
 import java.text.SimpleDateFormat
 import java.util.Locale
+import org.koin.androidx.viewmodel.ext.android.viewModel
 
 class PlayerActivity : AppCompatActivity() {
-    private val viewModel by viewModels<PlayerViewModel> { PlayerViewModel.Companion.getViewModelFactory() }
+    private val viewModel by viewModel<PlayerViewModel>()
     private lateinit var binding: ActivityPlayerBinding
     private var isPlaying = false
 

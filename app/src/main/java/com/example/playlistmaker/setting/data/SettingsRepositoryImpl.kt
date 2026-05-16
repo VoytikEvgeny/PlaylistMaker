@@ -1,6 +1,7 @@
 package com.example.playlistmaker.setting.data
 
 import android.content.Context
+import android.content.SharedPreferences
 import android.content.res.Configuration.UI_MODE_NIGHT_MASK
 import android.content.res.Configuration.UI_MODE_NIGHT_YES
 import androidx.appcompat.app.AppCompatDelegate
@@ -13,9 +14,8 @@ const val EXAMPLE_PREFERENCES = "example_preferences"
 const val THEME_KEY = "key_for_dark_theme_switch"
 const val HISTORY_LIST_KEY = "key_for_history_track_list"
 
-class SettingsRepositoryImpl(context: Context) : SettingsRepository {
-    private val prefs = context.getSharedPreferences(EXAMPLE_PREFERENCES, Context.MODE_PRIVATE)
-    private val resources = context.resources
+class SettingsRepositoryImpl(private val prefs: SharedPreferences, private val context: Context) :
+    SettingsRepository {
     override fun getThemeSettings(): ThemeSettings {
         val phoneTheme = isSystemDarkTheme()
         return ThemeSettings(prefs.getBoolean(THEME_KEY, phoneTheme))
@@ -34,6 +34,6 @@ class SettingsRepositoryImpl(context: Context) : SettingsRepository {
     }
 
     private fun isSystemDarkTheme(): Boolean {
-        return (resources.configuration.uiMode and UI_MODE_NIGHT_MASK) == UI_MODE_NIGHT_YES
+        return (context.resources.configuration.uiMode and UI_MODE_NIGHT_MASK) == UI_MODE_NIGHT_YES
     }
 }

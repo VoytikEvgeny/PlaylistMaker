@@ -60,4 +60,5 @@ dependencies {
 
     implementation(libs.retrofit)
     implementation(libs.retrofit.converter.gson)
+    implementation("io.insert-koin:koin-android:4.2.1")
 }

@@ -24,7 +24,7 @@ class SearchHistoryInteractorImpl(private val repository: SearchHistoryRepositor
                 trackListIterator.remove()
         }
         trackList.add(0, track)
-        if (trackList.size > HISTORY_LIST_SIZE) trackList.removeAt(HISTORY_LIST_SIZE-1)
+        if (trackList.size > HISTORY_LIST_SIZE) trackList.removeAt(HISTORY_LIST_SIZE - 1)
         saveHistoryList(trackList)
     }
 

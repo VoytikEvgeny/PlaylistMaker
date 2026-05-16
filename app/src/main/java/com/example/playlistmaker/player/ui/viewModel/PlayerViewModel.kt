@@ -3,10 +3,6 @@ package com.example.playlistmaker.player.ui.viewModel
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
-import androidx.lifecycle.ViewModelProvider
-import androidx.lifecycle.viewmodel.initializer
-import androidx.lifecycle.viewmodel.viewModelFactory
-import com.example.playlistmaker.creator.Creator
 import com.example.playlistmaker.player.domain.TrackPlayer
 import com.example.playlistmaker.player.ui.PlayStatus
 import com.example.playlistmaker.player.ui.TrackScreenState
@@ -61,7 +57,12 @@ class PlayerViewModel(private val trackPlayer: TrackPlayer) : ViewModel() {
     }
 
     private fun getCurrentPlayStatus(): PlayStatus {
-        return playStatusLiveData.value ?: PlayStatus(progress = SimpleDateFormat("mm:ss", Locale.getDefault()).format(0), isPlaying = false)
+        return playStatusLiveData.value ?: PlayStatus(
+            progress = SimpleDateFormat(
+                "mm:ss",
+                Locale.getDefault()
+            ).format(0), isPlaying = false
+        )
     }
 
     fun pause() {
@@ -73,12 +74,4 @@ class PlayerViewModel(private val trackPlayer: TrackPlayer) : ViewModel() {
         super.onCleared()
     }
 
-    companion object {
-        fun getViewModelFactory(): ViewModelProvider.Factory = viewModelFactory {
-            initializer {
-                val trackPlayer = Creator.proviedTrackPlayer()
-                PlayerViewModel(trackPlayer)
-            }
-        }
-    }
 }

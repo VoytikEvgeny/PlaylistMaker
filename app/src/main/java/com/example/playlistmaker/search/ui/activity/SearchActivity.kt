@@ -11,11 +11,11 @@ import android.view.View
 import android.view.inputmethod.InputMethodManager
 import android.widget.LinearLayout
 import androidx.activity.enableEdgeToEdge
-import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsCompat
 import androidx.core.view.isVisible
+import com.example.playlistmaker.CLICK_DEBOUNCE_DELAY
 import com.example.playlistmaker.databinding.ActivitySearchBinding
 import com.example.playlistmaker.player.ui.activity.PlayerActivity
 import com.example.playlistmaker.search.domain.models.Track
@@ -23,14 +23,11 @@ import com.example.playlistmaker.search.ui.SearchHistoryAdapter
 import com.example.playlistmaker.search.ui.TrackListAdapter
 import com.example.playlistmaker.search.ui.TrackState
 import com.example.playlistmaker.search.ui.viewModel.SearchViewModel
+import org.koin.androidx.viewmodel.ext.android.viewModel
 
 class SearchActivity : AppCompatActivity() {
-    companion object {
-        private const val CLICK_DEBOUNCE_DELAY = 1000L
-    }
-
     private var searchString: String = ""
-    private val viewModel by viewModels<SearchViewModel> { SearchViewModel.Companion.getViewModelFactory() }
+    private val viewModel by viewModel<SearchViewModel>()
     private lateinit var binding: ActivitySearchBinding
     private lateinit var simpleTextWatcher: TextWatcher
     private val trackListAdapter = TrackListAdapter()
