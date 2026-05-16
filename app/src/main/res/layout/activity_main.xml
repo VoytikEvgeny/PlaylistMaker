@@ -9,7 +9,7 @@
     android:orientation="vertical"
     android:padding="@dimen/padding_main"
     android:theme="@style/Theme.PlaylistMaker"
-    tools:context=".presentation.ui.main.MainActivity">
+    tools:context=".main.ui.MainActivity">
 
 
     <TextView

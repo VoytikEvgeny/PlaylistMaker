@@ -12,7 +12,7 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         style="@style/background_style"
-        tools:context=".presentation.ui.player.PlayerActivity">
+        tools:context=".player.ui.activity.PlayerActivity">
 
         <androidx.constraintlayout.widget.Guideline
             android:id="@+id/leftBorder"
@@ -114,6 +114,7 @@
             android:id="@+id/progress"
             style="@style/player_progress_style"
             tools:text="05:40"
+            android:text="00:00"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginTop="4dp"

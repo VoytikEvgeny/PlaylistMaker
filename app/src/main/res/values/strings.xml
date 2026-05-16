@@ -27,4 +27,9 @@
     <string name="year">Год</string>
     <string name="genre">Жанр</string>
     <string name="country">Страна</string>
+
+    <string name="share_toast">Мессенджеры не установлены</string>
+    <string name="agreement_toast">Браузеры не установлены</string>
+    <string name="support_toast">Почтовые клиенты не установлены</string>
+
 </resources>
