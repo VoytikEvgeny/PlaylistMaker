@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 
-<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/main"
@@ -17,9 +17,7 @@
 
     <FrameLayout
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="@dimen/searchTop"
-        >
+        android:layout_height="52dp">
 
         <EditText
             android:id="@+id/searchEditText"
@@ -55,39 +53,45 @@
 
     </FrameLayout>
 
-    <androidx.recyclerview.widget.RecyclerView
-        android:id="@+id/rvTrack"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:orientation="vertical"
-        android:layout_marginTop="124dp"
-        app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"/>
-
     <TextView
         android:id="@+id/search_history_text"
         style="@style/activity_search_infos_text_style"
         android:text="@string/search_history"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginStart="@dimen/margin_left_right_size"
-        android:layout_marginEnd="@dimen/margin_left_right_size"
+        android:layout_height="52dp"
+        android:layout_marginLeft="24dp"
+        android:layout_marginRight="24dp"
         android:textAlignment="center"
-        android:layout_marginTop="@dimen/searchHMarginTop"
-
+        android:layout_marginTop="24dp"
+        android:gravity="center"
+        android:layout_marginBottom="0dp"
+        android:paddingBottom="0dp"
+        android:visibility="gone"
 
         />
 
+
+    <ProgressBar android:id="@+id/progress_bar"
+        android:layout_marginTop="140dp"
+        android:layout_width="44dp"
+        android:layout_height="44dp"
+        android:layout_gravity="center"
+        android:indeterminateTint="@color/progress_bar_color"
+        tools:visibility="visible"
+        android:visibility="gone"/>
+
+
     <LinearLayout
-        android:id="@+id/search_history_group"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginTop="192dp"
         android:orientation="vertical">
         <androidx.recyclerview.widget.RecyclerView
-            android:id="@+id/historyRecyclerView"
+            android:id="@+id/rvTrack"
+            android:layout_marginTop="8dp"
             android:layout_width="match_parent"
             android:layout_height="0dp"
             android:layout_weight="1"
+            android:orientation="vertical"
             app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"/>
         <Button
             android:id="@+id/clear_history"
@@ -95,19 +99,9 @@
             android:text="@string/clear_history"
             android:layout_gravity="center"
             android:layout_marginTop="24dp"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
+            android:visibility="gone"
             />
     </LinearLayout>
-
-
-    <ProgressBar android:id="@+id/progress_bar"
-        android:layout_width="44dp"
-        android:layout_height="44dp"
-        android:layout_gravity="center"
-        android:indeterminateTint="@color/progress_bar_color"
-        tools:visibility="visible"
-        android:visibility="gone"/>
 
 
     <LinearLayout
@@ -157,5 +151,5 @@
             />
     </LinearLayout>
 
-</FrameLayout>
+</LinearLayout>
 

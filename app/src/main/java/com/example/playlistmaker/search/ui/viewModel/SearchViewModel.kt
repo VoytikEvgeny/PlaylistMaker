@@ -1,120 +1,51 @@
 package com.example.playlistmaker.search.ui.viewModel
 
-import android.os.Handler
-import android.os.Looper
-import android.os.SystemClock
 import androidx.lifecycle.LiveData
-import androidx.lifecycle.MediatorLiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
-import com.example.playlistmaker.SEARCH_DEBOUNCE_DELAY
-import com.example.playlistmaker.player.domain.PlayerInteractor
-import com.example.playlistmaker.search.domain.SearchHistoryInteractor
 import com.example.playlistmaker.search.domain.TracksInteractor
 import com.example.playlistmaker.search.domain.models.Track
-import com.example.playlistmaker.search.ui.TrackState
+import com.example.playlistmaker.search.domain.models.SearchState
+import com.example.playlistmaker.setting.domain.ConsumerData
+import com.google.gson.Gson
 
 class SearchViewModel(
-    private val searchHistoryInteractor: SearchHistoryInteractor,
-    private var tracksInteractor: TracksInteractor,
-    private var playerInteractor: PlayerInteractor,
+    private val tracksInteractor: TracksInteractor,
+    private val gson: Gson
 ) : ViewModel() {
-    private val handler = Handler(Looper.getMainLooper())
 
-    companion object {
-        private val SEARCH_REQUEST_TOKEN = Any()
-    }
+    private val state = MutableLiveData<SearchState>()
+    fun getState(): LiveData<SearchState> = state
 
-    private val searchLiveData = MutableLiveData<TrackState>()
-    fun getSearchLiveData(): LiveData<TrackState> = mediatorStateLiveData
-    private val historyLiveData = MutableLiveData<MutableList<Track>>()
-    fun getHistoryLiveData(): LiveData<MutableList<Track>> = historyLiveData
-    private var latestSearchText: String? = null
-    fun searchDebounce(changedText: String) {
-        if (latestSearchText == changedText && getSearchLiveData().value != TrackState.Error) return
-        this.latestSearchText = changedText
-        handler.removeCallbacksAndMessages(SEARCH_REQUEST_TOKEN)
-        val searchRunnable = Runnable { searchRequest(changedText) }
-        val postTime = SystemClock.uptimeMillis() + SEARCH_DEBOUNCE_DELAY
-        handler.postAtTime(
-            searchRunnable,
-            SEARCH_REQUEST_TOKEN,
-            postTime,
-        )
-    }
+    fun loadData(searchTrack: String) {
+        state.value = SearchState.Loading
 
-    fun clearSearchHistory() {
-        searchHistoryInteractor.clearSearchHistory()
-    }
+        tracksInteractor.searchTracks(
+            expression = searchTrack,
+            consumer = object : TracksInteractor.TracksConsumer {
 
-    fun getHistoryList() {
-        searchHistoryInteractor.getHistoryList(
-            object : SearchHistoryInteractor.SearchHistoryConsumer {
-                override fun consume(history: MutableList<Track>) {
-                    historyLiveData.postValue(history)
-                }
-            }
-        )
-    }
+                override fun consume(data: ConsumerData<List<Track>>) {
 
-    fun addTrackToHistory(track: Track) {
-        searchHistoryInteractor.addTrackToHistory(track)
-        playerInteractor.setCurrentTrack(track)
-        getHistoryList()
-    }
-
-    private fun searchRequest(newSearchText: String) {
-        if (newSearchText.isNotEmpty()) {
-            renderState(TrackState.Loading)
-            tracksInteractor.searchTracks(newSearchText, object : TracksInteractor.TracksConsumer {
-                override fun consume(foundTrackList: List<Track>?, errorMessage: String?) {
-                    val tracks = mutableListOf<Track>()
-                    if (foundTrackList != null) {
-                        tracks.addAll(foundTrackList)
-                    }
-                    when {
-                        errorMessage != null -> {
-                            renderState(
-                                TrackState.Error
-                            )
+                    when (data) {
+                        is ConsumerData.Data -> {
+                            val content = SearchState.Content(data.value)
+                            state.postValue(content)
                         }
 
-                        tracks.isEmpty() -> {
-                            renderState(
-                                TrackState.Empty
-                            )
-                        }
-
-                        else -> {
-                            renderState(
-                                TrackState.Content(
-                                    tracks,
-                                )
-                            )
+                        is ConsumerData.Error -> {
+                            val error = SearchState.Error(data.message)
+                            state.postValue(error)
                         }
                     }
+
                 }
-            })
-        }
-    }
 
-    private fun renderState(state: TrackState) {
-        searchLiveData.postValue(state)
-    }
-
-    private val mediatorStateLiveData = MediatorLiveData<TrackState>().also { liveData ->
-        liveData.addSource(searchLiveData) { trackState ->
-            liveData.value = when (trackState) {
-                is TrackState.Content -> TrackState.Content(trackState.tracks)
-                is TrackState.Empty -> trackState
-                is TrackState.Error -> trackState
-                is TrackState.Loading -> trackState
             }
-        }
+        )
+
     }
 
-    override fun onCleared() {
-        super.onCleared()
-        handler.removeCallbacksAndMessages(SEARCH_REQUEST_TOKEN)
+    fun gson(): Gson {
+        return gson
     }
 }

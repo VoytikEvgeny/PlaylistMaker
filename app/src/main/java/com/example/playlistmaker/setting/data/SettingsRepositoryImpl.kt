@@ -2,38 +2,29 @@ package com.example.playlistmaker.setting.data
 
 import android.content.Context
 import android.content.SharedPreferences
-import android.content.res.Configuration.UI_MODE_NIGHT_MASK
-import android.content.res.Configuration.UI_MODE_NIGHT_YES
 import androidx.appcompat.app.AppCompatDelegate
-import androidx.appcompat.app.AppCompatDelegate.MODE_NIGHT_NO
-import androidx.appcompat.app.AppCompatDelegate.MODE_NIGHT_YES
+import androidx.core.content.edit
+import com.example.playlistmaker.DARK_THEME_KEY
 import com.example.playlistmaker.setting.domain.SettingsRepository
 import com.example.playlistmaker.setting.domain.ThemeSettings
-
-const val EXAMPLE_PREFERENCES = "example_preferences"
-const val THEME_KEY = "key_for_dark_theme_switch"
-const val HISTORY_LIST_KEY = "key_for_history_track_list"
 
 class SettingsRepositoryImpl(private val prefs: SharedPreferences, private val context: Context) :
     SettingsRepository {
     override fun getThemeSettings(): ThemeSettings {
-        val phoneTheme = isSystemDarkTheme()
-        return ThemeSettings(prefs.getBoolean(THEME_KEY, phoneTheme))
+        return ThemeSettings(prefs.getBoolean(DARK_THEME_KEY, false))
     }
 
     override fun updateThemeSetting(settings: ThemeSettings) {
-        prefs.edit().putBoolean(THEME_KEY, settings.isDark).apply()
-        applyTheme(settings.isDark)
-    }
-
-    private fun applyTheme(isDark: Boolean) {
         AppCompatDelegate.setDefaultNightMode(
-            if (isDark) MODE_NIGHT_YES
-            else MODE_NIGHT_NO
+            if (settings.isDark) {
+                AppCompatDelegate.MODE_NIGHT_YES
+            } else {
+                AppCompatDelegate.MODE_NIGHT_NO
+            }
         )
+        prefs.edit {
+            putBoolean(DARK_THEME_KEY, settings.isDark)
+        }
     }
 
-    private fun isSystemDarkTheme(): Boolean {
-        return (context.resources.configuration.uiMode and UI_MODE_NIGHT_MASK) == UI_MODE_NIGHT_YES
-    }
 }

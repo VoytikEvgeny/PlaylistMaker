@@ -16,13 +16,13 @@ val viewModelModule = module {
     }
 
     viewModel {
-        PlayerViewModel(get())
+        PlayerViewModel(get(), get())
     }
     viewModel {
-        SearchViewModel(get(), get(),get())
+        SearchViewModel(get(), get())
     }
 
-    factory <MediaPlayer> {
+    factory<MediaPlayer> {
         MediaPlayer()
     }
 }

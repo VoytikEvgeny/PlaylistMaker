@@ -3,8 +3,8 @@ package com.example.playlistmaker.sharing.data.impl
 import android.content.Context
 import android.content.Intent
 import androidx.core.net.toUri
-import com.example.playlistmaker.sharing.domain.EmailData
 import com.example.playlistmaker.sharing.domain.ExternalNavigator
+import com.example.playlistmaker.sharing.domain.models.EmailData
 
 class ExternalNavigatorImpl(
     val context: Context
@@ -18,12 +18,13 @@ class ExternalNavigatorImpl(
     }
 
     override fun openEmail(emailData: EmailData) {
-        val supportIntent = Intent(Intent.ACTION_SENDTO)
-        supportIntent.data = "mailto:".toUri()
-        supportIntent.putExtra(Intent.EXTRA_EMAIL, emailData.email)
-        supportIntent.putExtra(Intent.EXTRA_SUBJECT, emailData.subject)
-        supportIntent.putExtra(Intent.EXTRA_TEXT, emailData.text)
-        supportIntent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
+        val supportIntent = Intent(Intent.ACTION_SENDTO).apply {
+            data = "mailto:".toUri()
+            putExtra(Intent.EXTRA_EMAIL, emailData.email)
+            putExtra(Intent.EXTRA_SUBJECT, emailData.subject)
+            putExtra(Intent.EXTRA_TEXT, emailData.text)
+            addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
+        }
         context.startActivity(supportIntent, null)
     }
 

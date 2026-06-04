@@ -1,77 +1,54 @@
 package com.example.playlistmaker.player.ui.viewModel
 
+import android.media.MediaPlayer
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
-import com.example.playlistmaker.player.domain.TrackPlayer
-import com.example.playlistmaker.player.ui.PlayStatus
-import com.example.playlistmaker.player.ui.TrackScreenState
-import java.text.SimpleDateFormat
-import java.util.Locale
+import com.example.playlistmaker.player.ui.PlayerState
+import com.example.playlistmaker.player.domain.StateData
+import com.example.playlistmaker.search.domain.models.Track
+import com.google.gson.Gson
 
-class PlayerViewModel(private val trackPlayer: TrackPlayer) : ViewModel() {
-    private var screenStateLiveData = MutableLiveData<TrackScreenState>(TrackScreenState.Loading)
-    fun getScreenStateLiveData(): LiveData<TrackScreenState> = screenStateLiveData
-    private val playStatusLiveData = MutableLiveData<PlayStatus>()
-    fun getPlayStatusLiveData(): LiveData<PlayStatus> = playStatusLiveData
+class PlayerViewModel(private val gson: Gson, private val mediaPlayer: MediaPlayer) : ViewModel() {
+    private val state = MutableLiveData<PlayerState>()
+    fun getState(): LiveData<PlayerState> = state
+    fun fromJson(trackJson: String?, javaClass: Class<Track>): Track {
+        return gson.fromJson(trackJson, javaClass)
+    }
 
-    init {
-        trackPlayer.prepare { track ->
-            screenStateLiveData.postValue(
-                TrackScreenState.Content(track)
-            )
+    fun preparePlayer(url: String?) {
+        mediaPlayer.setDataSource(url)
+        mediaPlayer.prepareAsync()
+        mediaPlayer.setOnPreparedListener {
+            state.postValue(PlayerState.Prepared(StateData(STATE_PREPARED)))
+        }
+        mediaPlayer.setOnCompletionListener {
+            state.postValue(PlayerState.Completion(StateData(STATE_PREPARED)))
         }
     }
 
-    fun play() {
-        trackPlayer.play(
-            statusObserver = object : TrackPlayer.StatusObserver {
-                override fun onProgress(progress: Float) {
-                    playStatusLiveData.value = getCurrentPlayStatus().copy(
-                        progress = formatTime(progress),
-                    )
-                }
-
-                override fun onPause() {
-                    playStatusLiveData.value = getCurrentPlayStatus().copy(isPlaying = false)
-                }
-
-                override fun onPlay() {
-                    playStatusLiveData.value = getCurrentPlayStatus().copy(isPlaying = true)
-                }
-
-                override fun onCompletion() {
-                    playStatusLiveData.value = PlayStatus(
-                        progress = SimpleDateFormat("mm:ss", Locale.getDefault()).format(0),
-                        isPlaying = false,
-                    )
-                }
-            },
-        )
+    fun currentPosition(): Int {
+        return mediaPlayer.currentPosition
     }
 
-    private fun formatTime(progress: Float): String {
-        val seconds = progress.toInt()
-        val minutes = seconds / 60
-        return String.format("%02d:%02d", minutes, seconds)
+    fun startPlayer() {
+        mediaPlayer.start()
+        state.postValue(PlayerState.Start(StateData(STATE_PLAYING)))
     }
 
-    private fun getCurrentPlayStatus(): PlayStatus {
-        return playStatusLiveData.value ?: PlayStatus(
-            progress = SimpleDateFormat(
-                "mm:ss",
-                Locale.getDefault()
-            ).format(0), isPlaying = false
-        )
+    fun pausePlayer() {
+        mediaPlayer.pause()
+        state.postValue(PlayerState.Pause(StateData(STATE_PAUSED)))
     }
 
-    fun pause() {
-        trackPlayer.pause()
+    fun releasePlayer() {
+        mediaPlayer.release()
     }
 
-    override fun onCleared() {
-        trackPlayer.release()
-        super.onCleared()
+    companion object {
+        const val STATE_DEFAULT = 0
+        const val STATE_PREPARED = 1
+        const val STATE_PLAYING = 2
+        const val STATE_PAUSED = 3
     }
-
 }

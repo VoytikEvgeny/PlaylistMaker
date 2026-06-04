@@ -41,28 +41,17 @@
                 android:id="@+id/share_text"
                 android:text="@string/app_share"
                 style="@style/textSetting"
-                />
-
-            <ImageButton
-                style="@style/ImageSetting"
-                android:src="@drawable/ic_share_24"
-                android:contentDescription="@string/app_share"
+                app:drawableEndCompat="@drawable/ic_share_24"
                 />
         </LinearLayout>
 
         <LinearLayout
             style="@style/LinearLayoutSetting">
-
             <TextView
                 android:id="@+id/support_text"
                 android:text="@string/btn_write_support"
                 style="@style/textSetting"
-                />
-
-            <ImageButton
-                style="@style/ImageSetting"
-                android:src="@drawable/ic_support_24"
-                android:contentDescription="@string/btn_write_support"
+                app:drawableEndCompat="@drawable/ic_support_24"
                 />
         </LinearLayout>
 
@@ -72,12 +61,7 @@
                 android:id="@+id/license_text"
                 android:text="@string/btn_user_license"
                 style="@style/textSetting"
-                />
-
-            <ImageButton
-                style="@style/ImageSetting"
-                android:src="@drawable/ic_forward_24"
-                android:contentDescription="@string/btn_user_license"
+                app:drawableEndCompat="@drawable/ic_forward_24"
                 />
         </LinearLayout>
     </LinearLayout>
