@@ -2,19 +2,27 @@ package com.example.playlistmaker.main.ui
 
 import android.content.Intent
 import android.os.Bundle
+import android.widget.Button
 import androidx.activity.enableEdgeToEdge
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsCompat
+import com.example.playlistmaker.R
 import com.example.playlistmaker.databinding.ActivityMainBinding
 import com.example.playlistmaker.library.ui.LibraryActivity
 import com.example.playlistmaker.search.ui.activity.SearchActivity
 import com.example.playlistmaker.setting.ui.activity.SettingsActivity
+import com.example.playlistmaker.setting.ui.viewModel.SettingsViewModel
+import org.koin.androidx.viewmodel.ext.android.viewModel
 
 class MainActivity : AppCompatActivity() {
+    val viewModel by viewModel<SettingsViewModel>()
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+
+        viewModel.changeTheme(viewModel.isDarkThemeOn())
         val viewBinding = ActivityMainBinding.inflate(layoutInflater)
+
         setContentView(viewBinding.root)
         enableEdgeToEdge()
         ViewCompat.setOnApplyWindowInsetsListener(viewBinding.root) { v, insets ->
